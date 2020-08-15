@@ -57,7 +57,7 @@ const DISH = {
 
 export class DishdetailComponent implements OnInit {
 
-  dish: Dish;
+  dish: Promise<Dish>;
 
   constructor(private dishservice: DishService,
               private route: ActivatedRoute,
@@ -66,7 +66,7 @@ export class DishdetailComponent implements OnInit {
 
   ngOnInit() {
     const id = +this.route.snapshot.params['id'];
-    this.dish = this.dishservice.getDish(this.route.snapshot.params['id']);
+    this.dish= this.dishservice.getDish(this.route.snapshot.params['id']);
   }
 
   goBack(): void {

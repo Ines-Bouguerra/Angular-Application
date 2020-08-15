@@ -13,7 +13,7 @@ import {LeaderService} from "../services/leader.service";
 })
 export class HomeComponent implements OnInit {
 
-  dish: Dish;
+  dish: Promise<Dish>;
   promotion: Promotion;
   leader:Leader;
 
