@@ -31,7 +31,7 @@ export class ContactComponent implements OnInit {
       contacttype: 'None',
       message: ''
     });
-
+//
     this.feedbackForm.valueChanges
       .subscribe(data => this.onValueChanged(data));
 
