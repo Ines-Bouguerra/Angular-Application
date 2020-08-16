@@ -98,7 +98,7 @@ export class DishdetailComponent implements OnInit {
     this.commentForm = this.c.group({
       name: ['', Validators.required],
 
-      comment: ''
+      comment: ['', Validators.required]
     });
 
     this.commentForm.valueChanges
@@ -127,7 +127,8 @@ export class DishdetailComponent implements OnInit {
     }
   }
   formErrors = {
-    'name': ''
+    'name': '',
+    'comment': ''
   };
   validationMessages = {
     'name': {
@@ -136,7 +137,7 @@ export class DishdetailComponent implements OnInit {
       'maxlength':     'Name cannot be more than 25 characters long.'
     },
     'comment': {
-      'required':      'comment is required.',
+      'required':      'Comment is required.',
       'minlength':     'comment must be at least 10 characters long.',
       'maxlength':     'comment cannot be more than 50 characters long.'
     }};
@@ -145,12 +146,12 @@ export class DishdetailComponent implements OnInit {
     console.log(this.comment);
     this.commentForm.reset({
       name: '',
-      slider:'',
+
       comment: ''
     });
     this.commentForm = this.c.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)] ],
-      message: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(50)] ]
+      comment: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)] ]
     });
   }
 
