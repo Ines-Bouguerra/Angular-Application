@@ -32,6 +32,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSliderModule} from "@angular/material/slider";
 
 @NgModule({
   declarations: [
@@ -45,25 +46,25 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     ContactComponent,
     LoginComponent
   ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    MatToolbarModule,
-    FlexLayoutModule,
-    MatListModule, MatGridListModule,
-    MatCardModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCheckboxModule,
-    FormsModule,
-    AppRoutingModule,
-    MatDialogModule,
-    MatSelectModule,
-    MatSlideToggleModule,
-    ReactiveFormsModule, MatProgressSpinnerModule
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        MatToolbarModule,
+        FlexLayoutModule,
+        MatListModule, MatGridListModule,
+        MatCardModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatCheckboxModule,
+        FormsModule,
+        AppRoutingModule,
+        MatDialogModule,
+        MatSelectModule,
+        MatSlideToggleModule,
+        ReactiveFormsModule, MatProgressSpinnerModule, MatSliderModule
 
-  ],
+    ],
   entryComponents: [
     LoginComponent
   ],

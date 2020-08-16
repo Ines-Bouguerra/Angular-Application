@@ -44,7 +44,25 @@
       <p>{{x.rating}} stars</p>
       <p>--{{x.author}} {{x.date|date}}</p>
     </mat-list>
+    <form novalidate [formGroup]="commentForm" #cform="ngForm" (ngSubmit)="onSubmit()">
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="name" placeholder="Name" type="text"  required>
+          <mat-error *ngIf="formErrors.name">{{formErrors.name}}</mat-error>
+        </mat-form-field></p>
+      <p> <mat-slider min="1" max="5"  value="5" thumbLabel="thumbLabel"
+                      tickInterval="getSliderTickInterval()"
 
+                      ></mat-slider>
+      </p>
+
+      <p>
+        <mat-form-field class="full-width">
+          <textarea matInput formControlName="comment" placeholder="Your Comment" rows=12></textarea>
+        </mat-form-field>
+      </p>
+      <button type="submit" mat-button class="background-primary text-floral-white">Submit</button>
+    </form>
   </div>
 
 </div>
