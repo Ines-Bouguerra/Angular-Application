@@ -44,17 +44,17 @@
       <p>--{{x.author}} {{x.date|date}}</p>
     </mat-list>
 
-<!--    <mat-list>-->
-<!--      <header><strong>Comments</strong></header>-->
-<!--      <p>{{}}</p>-->
-<!--      <p>{{}} stars</p>-->
-<!--      <p>&#45;&#45;{{}} {{}}</p>-->
-<!--    </mat-list>-->
-
-    <form novalidate [formGroup]="commentForm" #cform="ngForm" (ngSubmit)="onSubmit()">
+    <mat-list>
+      <header><strong>Comments</strong></header>
+      <p>{{ commentForm.value | json }} {{ commentForm.status | json }}</p>
+      <p>{{commentForm.getRawValue().comment}}</p>
+      <p>{{commentForm.getRawValue().star}} stars</p>
+      <p>--{{commentForm.getRawValue().name}} {{currentDate | date:'MMM d, y'}}</p>
+    </mat-list>
+    <form novalidate [formGroup]="commentForm" #commentform="ngForm" (ngSubmit)="onSubmit()">
       <p>
         <mat-form-field class="half-width">
-          <input matInput formControlName="name" placeholder="Name" type="text" Name required>
+          <input matInput formControlName="name" id="name" placeholder="Name" type="text" Name required>
           <mat-error *ngIf="formErrors.name">{{formErrors.name}}</mat-error>
         </mat-form-field>
       </p>

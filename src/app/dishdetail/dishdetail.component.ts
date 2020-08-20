@@ -5,8 +5,7 @@ import {DishService} from '../services/dish.service';
 import {Params, ActivatedRoute} from "@angular/router";
 import {getLocaleId, Location} from '@angular/common';
 import { switchMap } from 'rxjs/operators';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Feedback} from "../shared/feedback";
+import {FormBuilder, FormGroup, NgForm, Validators} from "@angular/forms";
 
 const DISH = {
   id: '0',
@@ -66,7 +65,7 @@ export class DishdetailComponent implements OnInit {
   dishIds: string[];
   prev: string;
   next: string;
-
+  currentDate = new Date();
   constructor(private dishservice: DishService,
               private route: ActivatedRoute,
               private location: Location,
@@ -97,7 +96,7 @@ export class DishdetailComponent implements OnInit {
 
     this.commentForm = this.c.group({
       name: ['', Validators.required],
-
+      star:[''],
       comment: ['', Validators.required]
     });
 
@@ -128,6 +127,7 @@ export class DishdetailComponent implements OnInit {
   }
   formErrors = {
     'name': '',
+    'star':5,
     'comment': ''
   };
   validationMessages = {
@@ -146,13 +146,15 @@ export class DishdetailComponent implements OnInit {
     console.log(this.comment);
     this.commentForm.reset({
       name: '',
-
+      star:'',
       comment: ''
     });
     this.commentForm = this.c.group({
-      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)] ],
+      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(10)] ],
+      star:[''],
       comment: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)] ]
     });
   }
+
 
 }
