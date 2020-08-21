@@ -6,7 +6,8 @@ import {Params, ActivatedRoute} from "@angular/router";
 import {getLocaleId, Location} from '@angular/common';
 import {switchMap} from 'rxjs/operators';
 import {FormBuilder, FormGroup, NgForm, Validators} from "@angular/forms";
-import { trigger, state, style, animate, transition } from '@angular/animations';
+import {expand, flyInOut} from "../animations/app.animation";
+
 const DISH = {
   id: '0',
   name: 'Uthappizza',
@@ -53,24 +54,19 @@ const DISH = {
 @Component({
   selector: 'app-dishdetail',
   templateUrl: './dishdetail.component.html',
-  styleUrls: ['./dishdetail.component.scss'],
-  animations: [
-    trigger('visibility', [
-      state('shown', style({
-        transform: 'scale(1.0)',
-        opacity: 1
-      })),
-      state('hidden', style({
-        transform: 'scale(0.5)',
-        opacity: 0
-      })),
-      transition('* => *', animate('0.5s ease-in-out'))
-    ])
-  ]
+  styleUrls: ['./dishdetail.component.scss']
+  , animations: [
+    flyInOut(), expand()
+  ], host: {
+    '[@flyInOut]': 'true',
+    'style': 'display: block;'
+  }
+
 })
 
 
 export class DishdetailComponent implements OnInit {
+
   @ViewChild('cform') commentFormDirective;
   commentForm: FormGroup;
   comment: Comment;
@@ -92,18 +88,30 @@ export class DishdetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dishservice.getDishIds().subscribe(dishIds => this.dishIds = dishIds,errmess => this.errMess = <any>errmess);
+    this.dishservice.getDishIds().subscribe(dishIds => this.dishIds = dishIds, errmess => this.errMess = <any>errmess);
     this.route.params.pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
       .subscribe(dish => {
         this.dish = dish;
         this.setPrevNext(dish.id);
-      },errmess => this.errMess = <any>errmess);
+      }, errmess => this.errMess = <any>errmess);
     this.route.params
       .pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
-      .subscribe(dish => { this.dish = dish; this.dishcopy = dish; this.setPrevNext(dish.id); },
-        errmess => this.errMess = <any>errmess );
-    this.route.params.pipe(switchMap((params: Params) => { this.visibility = 'hidden'; return this.dishservice.getDish(+params['id']); }))
-      .subscribe(dish => { this.dish = dish; this.dishcopy = dish; this.setPrevNext(dish.id); this.visibility = 'shown'; },
+      .subscribe(dish => {
+          this.dish = dish;
+          this.dishcopy = dish;
+          this.setPrevNext(dish.id);
+        },
+        errmess => this.errMess = <any>errmess);
+    this.route.params.pipe(switchMap((params: Params) => {
+      this.visibility = 'hidden';
+      return this.dishservice.getDish(+params['id']);
+    }))
+      .subscribe(dish => {
+          this.dish = dish;
+          this.dishcopy = dish;
+          this.setPrevNext(dish.id);
+          this.visibility = 'shown';
+        },
         errmess => this.errMess = <any>errmess);
   }
 
@@ -174,14 +182,19 @@ export class DishdetailComponent implements OnInit {
 
   onSubmit() {
     this.comment = this.commentForm.value;
-    this.comment.data=new Date().toISOString()
+    this.comment.data = new Date().toISOString()
     console.log(this.comment);
     this.dishcopy.comments.push();
     this.dishservice.putDish(this.dishcopy)
       .subscribe(dish => {
-          this.dish = dish; this.dishcopy = dish;
+          this.dish = dish;
+          this.dishcopy = dish;
         },
-        errmess => { this.dish = null; this.dishcopy = null; this.errMess = <any>errmess; });
+        errmess => {
+          this.dish = null;
+          this.dishcopy = null;
+          this.errMess = <any>errmess;
+        });
     this.commentFormDirective.resetForm({
       name: '',
       star: 5,
