@@ -1,6 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
-import { baseURL } from  './shared/baseurl';
+import {HttpClientModule} from '@angular/common/http';
+import {baseURL} from './shared/baseurl';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -11,6 +11,7 @@ import {NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
 import 'hammerjs';
+import {ProcessHTTPMsgService} from "./services/process-httpmsg.service";
 import {MenuComponent} from './menu/menu.component';
 import {MatListModule} from "@angular/material/list";
 import {DishdetailComponent} from './dishdetail/dishdetail.component';
@@ -47,30 +48,34 @@ import {MatSliderModule} from "@angular/material/slider";
     ContactComponent,
     LoginComponent
   ],
-    imports: [
-        BrowserModule,
-      HttpClientModule,
-        BrowserAnimationsModule,
-        MatToolbarModule,
-        FlexLayoutModule,
-        MatListModule, MatGridListModule,
-        MatCardModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatCheckboxModule,
-        FormsModule,
-        AppRoutingModule,
-        MatDialogModule,
-        MatSelectModule,
-        MatSlideToggleModule,
-        ReactiveFormsModule, MatProgressSpinnerModule, MatSliderModule
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    FlexLayoutModule,
+    MatListModule, MatGridListModule,
+    MatCardModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCheckboxModule,
+    FormsModule,
+    AppRoutingModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    ReactiveFormsModule, MatProgressSpinnerModule, MatSliderModule
 
-    ],
+  ],
   entryComponents: [
     LoginComponent
   ],
-  providers: [DishService, PromotionService, LeaderService, {provide: 'BaseURL', useValue: baseURL}],
+  providers: [DishService, PromotionService, LeaderService, {
+    provide: 'BaseURL',
+    useValue: baseURL
+  }, ProcessHTTPMsgService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

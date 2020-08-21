@@ -13,6 +13,7 @@ import {baseURL} from "../shared/baseurl";
 export class MenuComponent implements OnInit {
 
   dishes: Dish[];
+  errMess: string;
 
   // selectedDish: Dish;
 
@@ -29,6 +30,9 @@ export class MenuComponent implements OnInit {
     //   .then(dishes => this.dishes = dishes);
 
     this.dishService.getDishes().subscribe(dishes => this.dishes = dishes);
+    this.dishService.getDishes()
+      .subscribe(dishes => this.dishes = dishes,
+        errmess => this.errMess = <any>errmess);
   }
 
 }

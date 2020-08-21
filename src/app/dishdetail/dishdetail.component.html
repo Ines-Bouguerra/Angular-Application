@@ -7,7 +7,7 @@
      fxLayoutGap.xs="0">
 
   <div fxFlex="40">
-    <div fxFlex *ngIf="dish">
+    <div [hidden]="dishes || errMess">
       <mat-card>
         <mat-card-header>
           <div fxFlex="100">
@@ -34,6 +34,10 @@
           </button>
         </mat-card-actions>
       </mat-card>
+    </div>
+    <div fxFlex *ngIf="errMess">
+      <h2>Error</h2>
+      <h4>{{errMess}}</h4>
     </div>
   </div>
   <div fxFlex="40">

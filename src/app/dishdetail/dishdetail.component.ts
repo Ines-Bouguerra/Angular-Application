@@ -4,7 +4,7 @@ import {DishService} from '../services/dish.service';
 
 import {Params, ActivatedRoute} from "@angular/router";
 import {getLocaleId, Location} from '@angular/common';
-import { switchMap } from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
 import {FormBuilder, FormGroup, NgForm, Validators} from "@angular/forms";
 
 const DISH = {
@@ -66,20 +66,23 @@ export class DishdetailComponent implements OnInit {
   prev: string;
   next: string;
   currentDate = new Date();
+  errMess: string;
+  dishes: Dish[];
+
   constructor(private dishservice: DishService,
               private route: ActivatedRoute,
               private location: Location,
-              private c: FormBuilder,@Inject('BaseURL') private BaseURL) {
+              private c: FormBuilder, @Inject('BaseURL') private BaseURL) {
     this.createForm();
   }
 
   ngOnInit() {
-    this.dishservice.getDishIds().subscribe(dishIds => this.dishIds = dishIds);
+    this.dishservice.getDishIds().subscribe(dishIds => this.dishIds = dishIds,errmess => this.errMess = <any>errmess);
     this.route.params.pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
       .subscribe(dish => {
         this.dish = dish;
         this.setPrevNext(dish.id);
-      });
+      },errmess => this.errMess = <any>errmess);
   }
 
   setPrevNext(dishId: string) {
@@ -96,7 +99,7 @@ export class DishdetailComponent implements OnInit {
 
     this.commentForm = this.c.group({
       name: ['', Validators.required],
-      star:[''],
+      star: [''],
       comment: ['', Validators.required]
     });
 
@@ -106,8 +109,11 @@ export class DishdetailComponent implements OnInit {
     this.onValueChanged(); // (re)set validation messages now
 
   }
+
   onValueChanged(data?: any) {
-    if (!this.commentForm) { return; }
+    if (!this.commentForm) {
+      return;
+    }
     const form = this.commentForm;
     for (const field in this.formErrors) {
       if (this.formErrors.hasOwnProperty(field)) {
@@ -125,35 +131,40 @@ export class DishdetailComponent implements OnInit {
       }
     }
   }
+
   formErrors = {
     'name': '',
-    'star':5,
+    'star': 5,
     'comment': ''
   };
   validationMessages = {
     'name': {
-      'required':      'Name is required.',
-      'minlength':     'Name must be at least 2 characters long.',
-      'maxlength':     'Name cannot be more than 25 characters long.'
+      'required': 'Name is required.',
+      'minlength': 'Name must be at least 2 characters long.',
+      'maxlength': 'Name cannot be more than 25 characters long.'
     },
     'comment': {
-      'required':      'Comment is required.',
-      'minlength':     'comment must be at least 10 characters long.',
-      'maxlength':     'comment cannot be more than 50 characters long.'
-    }};
+      'required': 'Comment is required.',
+      'minlength': 'comment must be at least 10 characters long.',
+      'maxlength': 'comment cannot be more than 50 characters long.'
+    }
+  };
+
   onSubmit() {
     this.comment = this.commentForm.value;
     console.log(this.comment);
     this.commentForm.reset({
       name: '',
-      star:'',
+      star: '',
       comment: ''
     });
     this.commentForm = this.c.group({
-      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(10)] ],
-      star:[''],
-      comment: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)] ]
+      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(10)]],
+      star: [''],
+      comment: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]]
     });
+
+
   }
 
 
