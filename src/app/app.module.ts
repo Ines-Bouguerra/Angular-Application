@@ -1,5 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
-
+import { HttpClientModule } from '@angular/common/http';
+import { baseURL } from  './shared/baseurl';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -48,6 +49,7 @@ import {MatSliderModule} from "@angular/material/slider";
   ],
     imports: [
         BrowserModule,
+      HttpClientModule,
         BrowserAnimationsModule,
         MatToolbarModule,
         FlexLayoutModule,
@@ -68,7 +70,7 @@ import {MatSliderModule} from "@angular/material/slider";
   entryComponents: [
     LoginComponent
   ],
-  providers: [DishService, PromotionService, LeaderService],
+  providers: [DishService, PromotionService, LeaderService, {provide: 'BaseURL', useValue: baseURL}],
   bootstrap: [AppComponent]
 })
 export class AppModule {
