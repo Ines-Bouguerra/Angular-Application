@@ -36,6 +36,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSliderModule} from "@angular/material/slider";
 import { HighlightDirective } from './directives/highlight.directive';
+import {FeedbackService} from "./services/feedback.service";
 
 @NgModule({
   declarations: [
@@ -73,7 +74,7 @@ import { HighlightDirective } from './directives/highlight.directive';
   entryComponents: [
     LoginComponent
   ],
-  providers: [DishService, PromotionService, LeaderService, {
+  providers: [DishService, PromotionService,FeedbackService, LeaderService, {
     provide: 'BaseURL',
     useValue: baseURL
   }, ProcessHTTPMsgService
