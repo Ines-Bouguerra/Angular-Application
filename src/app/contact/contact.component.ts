@@ -20,11 +20,17 @@ export class ContactComponent implements OnInit {
   @ViewChild('fform') feedbackFormDirective;
   feedbackForm: FormGroup;
   feedback: Feedback;
-  feedbacks: Feedback[];
+  feedbacks: Feedback[] = [];
   newFeedback: Feedback;
   contactType = ContactType;
   visibility = 'shown';
+  feedbackCopy;
 
+  feedbackErrMess: string;
+
+  displaySpinner = false;
+  displayForm = true;
+  displayFeedback = false;
   constructor(private fb: FormBuilder, private feedbackService: FeedbackService) {
     //this.createForm();
     this.submitFeedback();
@@ -52,8 +58,7 @@ export class ContactComponent implements OnInit {
 
 
   submitFeedback(): void {
-    this.feedbackService.submitFeedback(this.newFeedback)
-      .subscribe(feedback => this.feedbacks.push(feedback));
+    this.feedbackService.submitFeedback(this.newFeedback).subscribe(feedback => this.feedbacks.push(feedback));
     console.log(this.feedbacks);
 
   }
@@ -82,53 +87,62 @@ export class ContactComponent implements OnInit {
 
   onSubmit() {
     this.feedback = this.feedbackForm.value;
-    console.log(this.feedback);
-    this.feedbackForm.reset({
-      firstname: '',
-      lastname: '',
-      telnum: '',
-      email: '',
-      agree: false,
-      contacttype: 'None',
-      message: ''
-    });
+    this.feedbackCopy = {id: '', ...this.feedback};
+    this.displaySpinner = true;
+    this.displayForm = false;
+    this.feedbackService.submitFeedback(this.feedbackCopy).subscribe(feedback => {
+        this.feedbackCopy = feedback, this.feedback = feedback, this.displaySpinner = false, this.displayFeedback = true, setTimeout(() => {
+          this.displayForm = true;
+          this.displayFeedback = false
+        }, 5000);
+      },
+      feedbackErrMess => {
+        this.feedback = null;
+        this.feedbackCopy = null;
+        this.displaySpinner = false;
+        this.displayForm = true;
+        this.feedbackErrMess = <any>feedbackErrMess
+      });
+    this.feedbackFormDirective.resetForm();
+
     this.feedbackForm = this.fb.group({
-      firstname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
-      lastname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
-      telnum: ['', [Validators.required, Validators.pattern]],
-      email: ['', [Validators.required, Validators.email]],
-      agree: false,
-      contacttype: 'None',
-      message: ''
-    });
-  }
+    firstname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
+    lastname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
+    telnum: ['', [Validators.required, Validators.pattern]],
+    email: ['', [Validators.required, Validators.email]],
+    agree: false,
+    contacttype: 'None',
+    message: ''
+  });
+}
 
-  formErrors = {
-    'firstname': '',
-    'lastname': '',
-    'telnum': '',
-    'email': ''
-  };
+formErrors = {
+  'firstname': '',
+  'lastname': '',
+  'telnum': '',
+  'email': ''
+};
 
-  validationMessages = {
-    'firstname': {
-      'required': 'First Name is required.',
-      'minlength': 'First Name must be at least 2 characters long.',
-      'maxlength': 'FirstName cannot be more than 25 characters long.'
-    },
-    'lastname': {
-      'required': 'Last Name is required.',
-      'minlength': 'Last Name must be at least 2 characters long.',
-      'maxlength': 'Last Name cannot be more than 25 characters long.'
-    },
-    'telnum': {
-      'required': 'Tel. number is required.',
-      'pattern': 'Tel. number must contain only numbers.'
-    },
-    'email': {
-      'required': 'Email is required.',
-      'email': 'Email not in valid format.'
-    },
-  };
+validationMessages = {
+  'firstname': {
+    'required': 'First Name is required.',
+    'minlength': 'First Name must be at least 2 characters long.',
+    'maxlength': 'FirstName cannot be more than 25 characters long.'
+  },
+  'lastname': {
+    'required': 'Last Name is required.',
+    'minlength': 'Last Name must be at least 2 characters long.',
+    'maxlength': 'Last Name cannot be more than 25 characters long.'
+  },
+  'telnum': {
+    'required': 'Tel. number is required.',
+    'pattern': 'Tel. number must contain only numbers.'
+  },
+  'email': {
+    'required': 'Email is required.',
+    'email': 'Email not in valid format.'
+  },
+};
+
 
 }
