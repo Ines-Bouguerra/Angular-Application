@@ -35,7 +35,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSliderModule} from "@angular/material/slider";
-import { HighlightDirective } from './directives/highlight.directive';
+import {HighlightDirective} from './directives/highlight.directive';
 import {FeedbackService} from "./services/feedback.service";
 
 @NgModule({
@@ -49,8 +49,7 @@ import {FeedbackService} from "./services/feedback.service";
     HomeComponent,
     ContactComponent,
     LoginComponent,
-    HighlightDirective
-  ],
+    HighlightDirective],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -74,12 +73,14 @@ import {FeedbackService} from "./services/feedback.service";
   entryComponents: [
     LoginComponent
   ],
-  providers: [DishService, PromotionService,FeedbackService, LeaderService, {
+  providers: [DishService, PromotionService, FeedbackService, LeaderService, {
     provide: 'BaseURL',
     useValue: baseURL
   }, ProcessHTTPMsgService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+
+  exports: [HeaderComponent, FooterComponent]
 })
 export class AppModule {
 }
