@@ -17,34 +17,56 @@ import {FeedbackService} from "../services/feedback.service";
 
 export class ContactComponent implements OnInit {
 
-  @ViewChild('fform') feedbackFormDirective;
   feedbackForm: FormGroup;
   feedback: Feedback;
-  feedbacks: Feedback[] = [];
-  newFeedback: Feedback;
   contactType = ContactType;
   visibility = 'shown';
-  feedbackCopy;
-
+  postFeedback: Feedback;
   feedbackErrMess: string;
+  formErrors = {
+    'firstname': '',
+    'lastname': '',
+    'telnum': '',
+    'email': ''
+  };
+  isLoading: boolean;
+  isShowingResponse: boolean;
+  validationMessages = {
+    'firstname': {
+      'required': 'First Name is required.',
+      'minlength': 'First Name must be at least 2 characters long.',
+      'maxlength': 'FirstName cannot be more than 25 characters long.'
+    },
+    'lastname': {
+      'required': 'Last Name is required.',
+      'minlength': 'Last Name must be at least 2 characters long.',
+      'maxlength': 'Last Name cannot be more than 25 characters long.'
+    },
+    'telnum': {
+      'required': 'Tel. number is required.',
+      'pattern': 'Tel. number must contain only numbers.'
+    },
+    'email': {
+      'required': 'Email is required.',
+      'email': 'Email not in valid format.'
+    },
+  };
+  @ViewChild('fform') feedbackFormDirective;
 
-  displaySpinner = false;
-  displayForm = true;
-  displayFeedback = false;
-  constructor(private fb: FormBuilder, private feedbackService: FeedbackService) {
-    //this.createForm();
-    this.submitFeedback();
+  constructor(private formBuilder: FormBuilder, private feedbackService: FeedbackService) {
+    this.createForm();
+    this.isLoading = false;
+    this.isShowingResponse = false;
 
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
 
-
-    this.feedbackForm = this.fb.group({
-      firstname: ['', Validators.required],
-      lastname: ['', Validators.required],
-      telnum: ['', Validators.required],
-      email: ['', Validators.required],
+    this.feedbackForm = this.formBuilder.group({
+      firstname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
+      lastname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
+      telnum: ['', [Validators.required, Validators.pattern]],
+      email: ['', [Validators.required, Validators.email]],
       agree: false,
       contacttype: 'None',
       message: ''
@@ -53,17 +75,39 @@ export class ContactComponent implements OnInit {
       .subscribe(data => this.onValueChanged(data));
 
     this.onValueChanged(); // (re)set validation messages now
-    this.submitFeedback();
   }
 
-
-  submitFeedback(): void {
-    this.feedbackService.submitFeedback(this.newFeedback).subscribe(feedback => this.feedbacks.push(feedback));
-    console.log(this.feedbacks);
+  createForm(): void {
+    this.postFeedback = null;
 
   }
 
-  onValueChanged(data?: any) {
+  onSubmit(): void {
+    this.isLoading = true;
+    this.feedback = this.feedbackForm.value;
+    console.log(this.feedback);
+    this.feedbackService.postFeedback(this.feedback)
+      .subscribe(feedback => this.postFeedback = feedback,
+        errmess => this.feedbackErrMess = (errmess as any));
+    this.isShowingResponse = true;
+    setTimeout(() => {
+      this.isShowingResponse = false;
+      this.isLoading = false;
+      this.postFeedback = null;
+    }, 5000);
+    this.feedbackForm.reset({
+      firstname: '',
+      lastname: '',
+      telnum: '',
+      email: '',
+      agree: false,
+      contacttype: 'None',
+      message: ''
+    });
+    this.feedbackFormDirective.resetForm();
+  }
+
+  onValueChanged(data?: any): void {
     if (!this.feedbackForm) {
       return;
     }
@@ -84,65 +128,4 @@ export class ContactComponent implements OnInit {
       }
     }
   }
-
-  onSubmit() {
-    this.feedback = this.feedbackForm.value;
-    this.feedbackCopy = {id: '', ...this.feedback};
-    this.displaySpinner = true;
-    this.displayForm = false;
-    this.feedbackService.submitFeedback(this.feedbackCopy).subscribe(feedback => {
-        this.feedbackCopy = feedback, this.feedback = feedback, this.displaySpinner = false, this.displayFeedback = true, setTimeout(() => {
-          this.displayForm = true;
-          this.displayFeedback = false
-        }, 5000);
-      },
-      feedbackErrMess => {
-        this.feedback = null;
-        this.feedbackCopy = null;
-        this.displaySpinner = false;
-        this.displayForm = true;
-        this.feedbackErrMess = <any>feedbackErrMess
-      });
-    this.feedbackFormDirective.resetForm();
-
-    this.feedbackForm = this.fb.group({
-    firstname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
-    lastname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
-    telnum: ['', [Validators.required, Validators.pattern]],
-    email: ['', [Validators.required, Validators.email]],
-    agree: false,
-    contacttype: 'None',
-    message: ''
-  });
-}
-
-formErrors = {
-  'firstname': '',
-  'lastname': '',
-  'telnum': '',
-  'email': ''
-};
-
-validationMessages = {
-  'firstname': {
-    'required': 'First Name is required.',
-    'minlength': 'First Name must be at least 2 characters long.',
-    'maxlength': 'FirstName cannot be more than 25 characters long.'
-  },
-  'lastname': {
-    'required': 'Last Name is required.',
-    'minlength': 'Last Name must be at least 2 characters long.',
-    'maxlength': 'Last Name cannot be more than 25 characters long.'
-  },
-  'telnum': {
-    'required': 'Tel. number is required.',
-    'pattern': 'Tel. number must contain only numbers.'
-  },
-  'email': {
-    'required': 'Email is required.',
-    'email': 'Email not in valid format.'
-  },
-};
-
-
 }

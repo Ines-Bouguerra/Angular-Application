@@ -1,32 +1,29 @@
-import {Injectable} from '@angular/core';
-import {from, Observable, throwError} from 'rxjs';
-import {Feedback} from '../shared/feedback'
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {baseURL} from '../shared/baseurl';
-import {map, catchError} from 'rxjs/operators';
-import {ProcessHTTPMsgService} from './process-httpmsg.service';
-import {Dish} from "../shared/dish";
+import { Injectable } from '@angular/core';
+import { Feedback } from '../shared/feedback';
+import { Observable } from 'rxjs';
+
+import { map, catchError} from 'rxjs/operators';
+import { HttpClient , HttpHeaders } from '@angular/common/http';
+import { baseURL } from '../shared/baseurl';
+import { ProcessHTTPMsgService} from "./process-httpmsg.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FeedbackService {
+
   constructor(private http: HttpClient,
-              private processHTTPMsgService: ProcessHTTPMsgService) {
+              private processHTTPMsgService: ProcessHTTPMsgService) { }
+
+  postFeedback(feedback: Feedback): Observable<Feedback> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      })
+    };
+    return this.http.post<Feedback>(baseURL + 'feedback' , feedback, httpOptions)
+      .pipe(catchError(this.processHTTPMsgService.handleError));
+
   }
 
-  submitFeedback(feedback: Feedback): Observable<Feedback> {
-    // return this.http.post<Feedback>(this.baseURL, feedback).pipe(catchError(this.handleError('submitFeedback', feedback)));
-    return this.http.post<Feedback>(baseURL +'feedback',feedback).pipe(catchError(this.processHTTPMsgService.handleError));
-  }
-  getfeedbacks() :Observable<any>{
-    return this.http.get(baseURL+'feedback').
-    pipe(
-      map((data: Feedback[]) => {
-        return data;
-      }), catchError( error => {
-        return throwError( 'Something went wrong!' );
-      })
-    )
-  }
 }
